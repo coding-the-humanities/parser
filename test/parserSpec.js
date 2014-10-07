@@ -1,7 +1,6 @@
 var expect = require("chai").expect;
 
-
-xcontext("parser", () => {
+context("parser", () => {
   it('should be able to instantiate a new parser', () => {
     let parser = new Parser();
     expect(parser).to.be.an.instanceof(Parser);
@@ -9,7 +8,7 @@ xcontext("parser", () => {
 
   context("parse method", ()=>{
 
-    describe("without arguments", ()=>{
+    xdescribe("without arguments", ()=>{
       it('should return an empty card object', () => {
         let parser = new Parser();
         let object = parser.parse();
@@ -17,7 +16,7 @@ xcontext("parser", () => {
       });
     });
 
-    describe("with a single line argument", () => {
+    xdescribe("with a single line argument", () => {
       it('should return an object', () => {
         let parser = new Parser();
         let object = parser.parse('title: Hello World');
@@ -25,7 +24,7 @@ xcontext("parser", () => {
       });
     })
 
-    describe("with a single line argument", () => {
+    xdescribe("with a single line argument", () => {
       it('should erase redundant whitespace', () => {
         let parser = new Parser();
         let object = parser.parse("title:     Goodbye World");
