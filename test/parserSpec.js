@@ -1,22 +1,7 @@
 var expect = require("chai").expect;
 
-class Parser {
-  parse(string){
-    let parsedObject = {};
-    if(string){
-      let [, key, value] = this.parseLine(string);
-      parsedObject[key] = value;
-    }
-    return parsedObject;
-  }
 
-  parseLine(rawLine){
-    let parsedLine = rawLine.match(/(.+)\:\s+(.+)/);
-    return parsedLine;
-  }
-}
-
-context("parser", () => {
+xcontext("parser", () => {
   it('should be able to instantiate a new parser', () => {
     let parser = new Parser();
     expect(parser).to.be.an.instanceof(Parser);
