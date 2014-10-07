@@ -40,7 +40,7 @@ context("parser", () => {
       });
     });
 
-    describe("with a single line argument", () => {
+    describe("with a single line string", () => {
 
       it('returns an object', () => {
         let object = parser.parse('title: Hello World');
@@ -56,6 +56,16 @@ context("parser", () => {
         let object = parser.parse("title:  Goodbye World");
         expect(object.title).to.equal("Goodbye World");
       });
+    })
+
+    describe("with a multi line string", () => {
+
+      it('correctly parses the input string', () => {
+        let object = parser.parse("title: Goodbye World\ntype: Exercise");
+        expect(object.title).to.equal("Goodbye World");
+        expect(object.type).to.equal("Exercise");
+      });
+
     })
   })
 });
