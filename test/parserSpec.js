@@ -3,10 +3,13 @@ let expect = require("chai").expect;
 function Parser(){
 }
 
-Parser.prototype.parse = function(){
-  return {
-    title: "Hello World"
-  };
+Parser.prototype.parse = function(inputLine){
+  var parsedObject = {};
+  if(inputLine){
+    var parsedLine = inputLine.match(/(.+)\:\s+(.+)/);
+    parsedObject[parsedLine[1]] = parsedLine[2];
+  }
+  return parsedObject;
 }
 
 context("parser", () => {
@@ -39,9 +42,9 @@ context("parser", () => {
         expect(object.title).to.equal("Goodbye World");
       });
 
-      xit('should erase redundant whitespace', () => {
+      it('should erase redundant whitespace', () => {
         let parser = new Parser();
-        let object = parser.parse("title:     Goodbye World");
+        let object = parser.parse("title:  Goodbye World");
         expect(object.title).to.equal("Goodbye World");
       });
     })
