@@ -1,16 +1,30 @@
+
+
+
+
+
+
+
 let expect = require("chai").expect;
 
-function Parser(){
+class Parser {
+  constructor(){
+    this.parsedObject = {};
+  }
+
+  parse(inputString){
+    if(inputString){
+      let [, key, value] = this.parseLine(inputString);
+      this.parsedObject[key]= value;
+    }
+    return this.parsedObject;
+  }
+
+  parseLine(inputLine){
+    return inputLine.match(/(.+)\:\s+(.+)/);
+  }
 }
 
-Parser.prototype.parse = function(inputLine){
-  var parsedObject = {};
-  if(inputLine){
-    var parsedLine = inputLine.match(/(.+)\:\s+(.+)/);
-    parsedObject[parsedLine[1]] = parsedLine[2];
-  }
-  return parsedObject;
-}
 
 context("parser", () => {
 
