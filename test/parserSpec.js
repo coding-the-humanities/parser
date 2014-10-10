@@ -1,6 +1,9 @@
 let expect = require("chai").expect;
 
 class Parser {
+  constructor(){
+    this.utils = new StringUtilities;
+  }
 
   parse(inputString){
     let parsedObject = this.parseString(inputString) || {};
@@ -31,11 +34,16 @@ class Parser {
 
   parseLine(inputLine){
     let splittedLine = inputLine.split(": ");
-    let cleanedLine = splittedLine.map((string)=>{
-      let cleanedString= string.replace(/^\s+|\:$/g, '');
-      return cleanedString;
-    })
+    let cleanedLine = splittedLine.map((string) => {
+      return this.utils.cleanString(string);
+    });
     return cleanedLine;
+  }
+}
+
+class StringUtilities {
+  cleanString(string){
+    return string.replace(/^\s+|\:$|\s+$/g, '');
   }
 }
 
@@ -72,8 +80,13 @@ context("parser", () => {
         expect(object.title).to.equal("Goodbye World");
       });
 
-      it('should erase redundant whitespace', () => {
+      it('should erase redundant whitespace before value', () => {
         let object = parser.parse("title:  Goodbye World");
+        expect(object.title).to.equal("Goodbye World");
+      });
+
+      it('should erase redundant whitespace after value', () => {
+        let object = parser.parse("title: Goodbye World   ");
         expect(object.title).to.equal("Goodbye World");
       });
     })
