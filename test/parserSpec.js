@@ -2,20 +2,40 @@ let expect = require("chai").expect;
 
 class Parser {
 
-  constructor(){
-    this.parsedObject = {};
+  parse(inputString){
+    let parsedObject = this.parseString(inputString) || {};
+    return parsedObject;
   }
 
-  parse(inputString){
+  parseString(inputString){
     if(inputString){
-      let [, key, value] = this.parseLine(inputString);
-      this.parsedObject[key]= value;
+      let lines = inputString.split('\n');
+      return this.parseLines(lines);
     }
-    return this.parsedObject;
+  }
+
+  parseLines(lines){
+    let parsedObject = {};
+    let currentLevel = parsedObject;
+    lines.forEach((line) => {
+      let [key, value] = this.parseLine(line);
+      if(!value){
+        parsedObject[key] = {};
+        currentLevel = parsedObject[key];
+      } else {
+        currentLevel[key] = value;
+      }
+    })
+    return parsedObject;
   }
 
   parseLine(inputLine){
-    return inputLine.match(/(.+)\:\s+(.+)/);
+    let splittedLine = inputLine.split(": ");
+    let cleanedLine = splittedLine.map((string)=>{
+      let cleanedString= string.replace(/^\s+|\:$/g, '');
+      return cleanedString;
+    })
+    return cleanedLine;
   }
 }
 
@@ -64,6 +84,11 @@ context("parser", () => {
         let object = parser.parse("title: Goodbye World\ntype: Exercise");
         expect(object.title).to.equal("Goodbye World");
         expect(object.type).to.equal("Exercise");
+      });
+
+      it('correctly handles nested keys', () => {
+        let object = parser.parse("person:\n   firstName: Reika");
+        expect(object.person.firstName).to.equal("Reika");
       });
 
     })
