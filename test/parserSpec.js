@@ -23,12 +23,13 @@ class Parser {
     lines.forEach((line) => {
       let [key, value] = this.parseLine(line);
       if(!value){
-        parsedObject[key] = {};
-        currentLevel = parsedObject[key];
+        currentLevel[key] = {};
+        currentLevel = currentLevel[key];
       } else {
         currentLevel[key] = value;
       }
     })
+    console.log(parsedObject);
     return parsedObject;
   }
 
@@ -41,11 +42,13 @@ class Parser {
   }
 }
 
+
 class StringUtilities {
   cleanString(string){
     return string.replace(/^\s+|\:$|\s+$/g, '');
   }
 }
+
 
 context("parser", () => {
 
@@ -68,7 +71,7 @@ context("parser", () => {
       });
     });
 
-    describe("with a single line string", () => {
+    context("with a single line string", () => {
 
       it('returns an object', () => {
         let object = parser.parse('title: Hello World');
@@ -91,7 +94,7 @@ context("parser", () => {
       });
     })
 
-    describe("with a multi line string", () => {
+    context("multi line string", () => {
 
       it('correctly parses the input string', () => {
         let object = parser.parse("title: Goodbye World\ntype: Exercise");
@@ -99,11 +102,18 @@ context("parser", () => {
         expect(object.type).to.equal("Exercise");
       });
 
-      it('correctly handles nested keys', () => {
-        let object = parser.parse("person:\n   firstName: Reika");
-        expect(object.person.firstName).to.equal("Reika");
-      });
+      desribe("with nested keys", () => {
 
+        it('correctly parses the first level', () => {
+          let object = parser.parse("person:\n   firstName: Reika");
+          expect(object.person.firstName).to.equal("Reika");
+        });
+
+        it('correctly parses deeper levels', () => {
+          let object = parser.parse("person:\n name:\n firstName: Reika");
+          expect(object.person.name.firstName).to.equal("Reika");
+        });
+      });
     })
   })
 });
